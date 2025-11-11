@@ -111,6 +111,130 @@ end
 ![image](https://github.com/natsaravanan/19AI405FUNDAMENTALSOFARTIFICIALINTELLIGENCE/assets/87870499/a8a27e2a-6fd4-46a2-afb5-6d27b8556702)
 ![image](https://github.com/natsaravanan/19AI405FUNDAMENTALSOFARTIFICIALINTELLIGENCE/assets/87870499/a2acb6a1-ed8e-42e5-8968-fe805e4b0255)
 
+PROGRAM
+import math
+
+player, opponent = 'X', 'O'
+
+# Function to check if any moves are left
+def is_moves_left(board):
+    for row in board:
+        if '_' in row:
+            return True
+    return False
+
+# Evaluation function
+def evaluate(board):
+    # Check rows
+    for row in range(3):
+        if board[row][0] == board[row][1] == board[row][2]:
+            if board[row][0] == player:
+                return 10
+            elif board[row][0] == opponent:
+                return -10
+
+    # Check columns
+    for col in range(3):
+        if board[0][col] == board[1][col] == board[2][col]:
+            if board[0][col] == player:
+                return 10
+            elif board[0][col] == opponent:
+                return -10
+
+    # Check diagonals
+    if board[0][0] == board[1][1] == board[2][2]:
+        if board[0][0] == player:
+            return 10
+        elif board[0][0] == opponent:
+            return -10
+    if board[0][2] == board[1][1] == board[2][0]:
+        if board[0][2] == player:
+            return 10
+        elif board[0][2] == opponent:
+            return -10
+
+    return 0
+
+# Minimax algorithm
+def minimax(board, depth, is_max):
+    score = evaluate(board)
+
+    # If Maximizer (AI) wins
+    if score == 10:
+        return score - depth
+
+    # If Minimizer (Human) wins
+    if score == -10:
+        return score + depth
+
+    # If no more moves (Draw)
+    if not is_moves_left(board):
+        return 0
+
+    # Maximizer's move
+    if is_max:
+        best = -math.inf
+        for i in range(3):
+            for j in range(3):
+                if board[i][j] == '_':
+                    board[i][j] = player
+                    best = max(best, minimax(board, depth + 1, not is_max))
+                    board[i][j] = '_'
+        return best
+
+    # Minimizer's move
+    else:
+        best = math.inf
+        for i in range(3):
+            for j in range(3):
+                if board[i][j] == '_':
+                    board[i][j] = opponent
+                    best = min(best, minimax(board, depth + 1, not is_max))
+                    board[i][j] = '_'
+        return best
+
+# Function to find the best move
+def find_best_move(board):
+    best_val = -math.inf
+    best_move = (-1, -1)
+
+    for i in range(3):
+        for j in range(3):
+            if board[i][j] == '_':
+                board[i][j] = player
+                move_val = minimax(board, 0, False)
+                board[i][j] = '_'
+
+                if move_val > best_val:
+                    best_move = (i, j)
+                    best_val = move_val
+
+    print(f"The best move for AI is row {best_move[0]}, column {best_move[1]}")
+    return best_move
+
+# Main program
+board = [
+    ['X', 'O', 'X'],
+    ['O', 'O', '_'],
+    ['_', '_', 'X']
+]
+
+print("Current Board:")
+for r in board:
+    print(r)
+
+best_move = find_best_move(board)
+print("\nThe Optimal Move is:", best_move)
+
+OUTPUT
+Current Board:
+['X', 'O', 'X']
+['O', 'O', '_']
+['_', '_', 'X']
+
+The best move for AI is row 2, column 0
+The Optimal Move is: (2, 0)
+
 <hr>
 <h2>Result:</h2>
-<p>Thus,Implementation of  Minimax Search Algorithm for a Simple TIC-TAC-TOE game wasa done successfully.</p>
+<p>Thus, the Minimax Search Algorithm was successfully implemented for a simple Tic-Tac-Toe game, enabling the computer to always make an optimal move and either win or draw the game.</p>
